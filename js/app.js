@@ -25,7 +25,7 @@ class Enemy{
     update(dt){
         this.x += this.speed * dt;
         // if enemy moves out of the canvas, following code changes enemy's setup
-       if (this.x > 500) {
+        if (this.x > 500) {
             this.x =  enemyXvalues[Math.floor(Math.random() * 3)];
             this.y = enemyYvalues[Math.floor(Math.random() * 3)];
             this.speed = Math.floor(100 + (Math.random() * 200));
@@ -38,7 +38,7 @@ class Enemy{
     };
 }
 
-
+let gameWinned = false;
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
@@ -52,11 +52,19 @@ class Player{
     }
 
     update(){
-        this.checkCollision();
-        // reseting player location
         if (this.y < 60) {
-            alert('You Won!\n' + '\n' + 'Resetting Game..');
-            this.reset();
+           if(!gameWinned){
+                setTimeout(() => {
+                    var r = confirm("Congratualation!!!You Won!! Do you want to play again?");
+                    if (r == true) {
+                        player.reset();
+                        gameWinned=false;
+                    }
+                },1000);
+                gameWinned=true;
+           }
+        } else{
+            this.checkCollision();
         }
     }
 
@@ -82,7 +90,7 @@ class Player{
                 }
                 break;
             case 'down':
-                if (this.y < 399) {
+                if (this.y <= 400) {
                     this.y += 85;
                 }
                 break;
@@ -90,21 +98,20 @@ class Player{
         this.render();
     }
 
+    // check for collision between enemy and player
+    // limited number of collisions allowed, else Game over
     checkCollision() { 
-        // check for collision between enemy and player
-        // limited number of collisions allowed, else Game over
-        for(var i = 0; i<allEnemies.length; i++) {
-            var currentEnemy = allEnemies[i];
-    
-        if (!(currentEnemy.y + 70 < this.y ||
-            currentEnemy.y > this.y + 70 ||
-            currentEnemy.x + 78 < this.x ||
-            currentEnemy.x > this.x + 78)) {
-                this.lives =+ 1;
-                if(this.lives === 5) {
-                    alert('Game Over!');
-                }
-                this.reset();
+        for(let currentEnemy of allEnemies) {
+
+            if (!(currentEnemy.y + 50 < this.y ||
+                currentEnemy.y > this.y + 50 ||
+                currentEnemy.x + 50 < this.x ||
+                currentEnemy.x > this.x + 50)) {
+                    this.lives =+ 1;
+                    if(this.lives === 5) {
+                        alert('Game Over!');
+                    }
+                    this.reset();
             }
         }
     }
