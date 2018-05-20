@@ -8,43 +8,56 @@
 
     this.sprite = 'images/enemy-bug.png';
 };*/
+
+const enemyXvalues = [-50,-100, -150];
+const enemyYvalues = [50, 130, 210];
+
 class Enemy{
-    constructor(x,y){
-        this.x=x;
-        this.y=y;
-        this.dt = Math.floor(Math.random() * 2 + 1) 
+    constructor(){
         this.sprite = 'images/enemy-bug.png';
+        this.x = enemyXvalues[Math.floor(Math.random() * 3)];
+        this.y = enemyYvalues[Math.floor(Math.random() * 3)];
+        this.speed = Math.floor(100 + (Math.random() * 200));
     }
+
+    // Update the enemy's position, required method for game
+    // Parameter: dt, a time delta between ticks
+    update(dt){
+        this.x += this.speed * dt;
+        // if enemy moves out of the canvas, following code changes enemy's setup
+       if (this.x > 500) {
+            this.x =  enemyXvalues[Math.floor(Math.random() * 3)];
+            this.y = enemyYvalues[Math.floor(Math.random() * 3)];
+            this.speed = Math.floor(100 + (Math.random() * 200));
+        }
+    }
+
+    // Draw the enemy on the screen, required method for game
+    render() {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    };
 }
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
-Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
-};
-
-// Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
 
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
 class Player{
 
-    constructor(x,y){
-        this.x = x;
-        this.y = y;
+    constructor(){
         this.sprite = 'images/char-boy.png';
-        //this.lives = 3;
-        //this.points = 0;
+        this.x = 200;
+        this.y = 400;
+        this.lives = 0;
     }
 
     update(){
-
+        this.checkCollision();
+        // reseting player location
+        if (this.y < 60) {
+            alert('You Won!\n' + '\n' + 'Resetting Game..');
+            this.reset();
+        }
     }
 
     render(){
@@ -76,26 +89,45 @@ class Player{
         }
         this.render();
     }
+
+    checkCollision() { 
+        // check for collision between enemy and player
+        // limited number of collisions allowed, else Game over
+        for(var i = 0; i<allEnemies.length; i++) {
+            var currentEnemy = allEnemies[i];
+    
+        if (!(currentEnemy.y + 70 < this.y ||
+            currentEnemy.y > this.y + 70 ||
+            currentEnemy.x + 78 < this.x ||
+            currentEnemy.x > this.x + 78)) {
+                this.lives =+ 1;
+                if(this.lives === 5) {
+                    alert('Game Over!');
+                }
+                this.reset();
+            }
+        }
+    }
+
+    reset() {
+        this.x = 200;
+        this.y = 400;
+        this.lives = 0;
+    }
+
 }
 
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-const enemy1 = new Enemy(-100, 60);
-const enemy2 = new Enemy(-100, 145);
-const enemy3 = new Enemy(-100, 230);
-const enemy4 = new Enemy(-290, 60)
-const enemy5 = new Enemy(-290, 145)
-const enemy6 = new Enemy(-280, 230)
-const allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5, enemy6];
+const totalEnemies = 3;
+let allEnemies = [];
+for (var i = 0; i < totalEnemies; i++) {
+    allEnemies.push(new Enemy());
+}
 
-const player = new Player(200, 400);
-
-
-document.addEventListener("DOMContentLoaded", function(event) {
-    player.render();
-});
+var player = new Player();
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
