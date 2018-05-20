@@ -1,13 +1,3 @@
-// Enemies our player must avoid
-/*var Enemy = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-
-    this.sprite = 'images/enemy-bug.png';
-};*/
 
 const enemyXvalues = [-50,-100, -150];
 const enemyYvalues = [50, 130, 210];
@@ -76,11 +66,9 @@ class Player{
         if (this.y < 60) {
            if(!gameWinned){
                 setTimeout(() => {
-                    var r = confirm("Congratualation!!!You Won!! Do you want to play again?");
-                    if (r == true) {
-                        player.reset();
-                        gameWinned=false;
-                    }
+                    alert("Congratualation!!!You Won!! Starting new game");
+                    player.reset();
+                    gameWinned=false;
                 },1000);
                 gameWinned=true;
            }
@@ -108,7 +96,7 @@ class Player{
                 }
                 break;
             case 'right':
-                if (this.x < 399) {
+                if (this.x <= 400) {
                     this.x += 100;
                 }
                 break;
@@ -118,7 +106,7 @@ class Player{
                 }
                 break;
             case 'down':
-                if (this.y <= 400) {
+                if (this.y < 400) {
                     this.y += 85;
                 }
                 break;
@@ -157,18 +145,16 @@ class Player{
 }
 
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
-
-function startGame(){
+/**
+* @description starts the game by instantiating the objects
+* Player.handleInput() method. 
+*/ 
+(function startGame(){
     for (var i = 0; i < totalEnemies; i++) {
         allEnemies.push(new Enemy());
     }
     player = new Player();
-}
-
-
+}());
 
 /**
 * @description this listens for key presses and sends the keys to your
