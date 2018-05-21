@@ -15,6 +15,11 @@ body {
     border: 1px solid #978a8a;
 }
 
+.game-info{
+    font-size: 1.5em;
+    margin-bottom: -20px;
+}
+
 .avatars{
    width: 100%;
    list-style-type: none;

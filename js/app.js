@@ -63,13 +63,15 @@ class Player{
     * @description updates the Player location 
     */ 
     update(){
+        document.getElementById('lives').innerHTML=5-this.lives;
         if (this.y < 60) {
            if(!gameWinned){
                 setTimeout(() => {
-                    alert("Congratualation!!!You Won!! Starting new game");
+                    alert("Congratualation!!!You Won!! Starting new game...");
                     player.reset();
+                    player.lives=0;
                     gameWinned=false;
-                },1000);
+                },500);
                 gameWinned=true;
            }
         } else{
@@ -124,9 +126,10 @@ class Player{
                 currentEnemy.y > this.y + 50 ||
                 currentEnemy.x + 50 < this.x ||
                 currentEnemy.x > this.x + 50)) {
-                    this.lives =+ 1;
+                    this.lives = this.lives + 1;
                     if(this.lives === 5) {
-                        alert('Game Over!');
+                        alert('Game Over!!! Starting new game...');
+                        this.lives=0;
                     }
                     this.reset();
             }
@@ -139,17 +142,23 @@ class Player{
     reset() {
         this.x = 200;
         this.y = 400;
-        this.lives = 0;
+    }
+
+    /**
+    * @description sets the player's sprite
+    */ 
+    setSprite(sprite){
+        this.sprite = sprite;
     }
 
 }
 
 
 /**
-* @description starts the game by instantiating the objects
+* @description initializes the game by instantiating the objects
 * Player.handleInput() method. 
 */ 
-(function startGame(){
+(function initializeGame(){
     for (var i = 0; i < totalEnemies; i++) {
         allEnemies.push(new Enemy());
     }
@@ -157,16 +166,36 @@ class Player{
 }());
 
 /**
-* @description this listens for key presses and sends the keys to your
-* Player.handleInput() method. 
-*/ 
-document.addEventListener('keyup', function(e) {
-    var allowedKeys = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
-    };
+* @description listens for the avatar change on click on the avatars list
+*/
+let avatarList = document.getElementById("avatars-list").getElementsByTagName("li");
+for(let i=0; i<avatarList.length;i++){
+    avatarList[i].addEventListener('click', e =>{
+        player.setSprite(e.target.attributes.src.value);
+    });
+}
 
-    player.handleInput(allowedKeys[e.keyCode]);
+/**
+* @description starts game by listening for key presses and sends the keys to your
+* Player.handleInput() method. 
+*/
+function startGame(){
+    document.addEventListener('keyup', function(e) {
+        var allowedKeys = {
+            37: 'left',
+            38: 'up',
+            39: 'right',
+            40: 'down'
+        };
+    
+        player.handleInput(allowedKeys[e.keyCode]);
+    });
+} 
+
+/**
+* @description listens for a click on start button and starts the game
+*/
+document.getElementById('start-button').addEventListener('click', e => {
+    document.getElementsByClassName('game-start')[0].style.visibility = 'hidden';
+    startGame();
 });
