@@ -33,6 +33,18 @@ class Enemy{
             this.y = enemyYvalues[Math.floor(Math.random() * 3)];
             this.speed = Math.floor(100 + (Math.random() * 200));
         }
+
+        if (!(this.y + 50 < player.y ||
+            this.y > player.y + 50 ||
+            this.x + 50 < player.x ||
+            this.x > player.x + 50)) {
+            player.lives = player.lives + 1;
+            if(player.lives === 5) {
+                alert('Game Over!!! Starting new game...');
+                player.lives=0;
+            }
+            player.reset();
+        }
     }
 
     /**
@@ -40,7 +52,9 @@ class Enemy{
     */ 
     render() {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    };
+    }
+
+
 }
 
 
@@ -64,19 +78,17 @@ class Player{
     */ 
     update(){
         document.getElementById('lives').innerHTML=5-this.lives;
-        if (this.y < 60) {
-           if(!gameWinned){
-                setTimeout(() => {
-                    alert("Congratualation!!!You Won!! Starting new game...");
-                    player.reset();
-                    player.lives=0;
-                    gameWinned=false;
-                },500);
-                gameWinned=true;
-           }
-        } else{
+        if (this.y < 60 && !gameWinned) {
+            setTimeout(() => {
+                alert("Congratualation!!!You Won!! Starting new game...");
+                player.reset();
+                player.lives=0;
+                gameWinned=false;
+            },500);
+            gameWinned=true;
+        } /*else{
             this.checkCollision();
-        }
+        }*/
     }
 
     /**
@@ -98,7 +110,7 @@ class Player{
                 }
                 break;
             case 'right':
-                if (this.x <= 400) {
+                if (this.x < 400) {
                     this.x += 100;
                 }
                 break;
@@ -114,26 +126,6 @@ class Player{
                 break;
         }
         this.render();
-    }
-
-    /**
-    * @description  checks for collision between enemy and player
-    */ 
-    checkCollision() { 
-        for(let currentEnemy of allEnemies) {
-
-            if (!(currentEnemy.y + 50 < this.y ||
-                currentEnemy.y > this.y + 50 ||
-                currentEnemy.x + 50 < this.x ||
-                currentEnemy.x > this.x + 50)) {
-                    this.lives = this.lives + 1;
-                    if(this.lives === 5) {
-                        alert('Game Over!!! Starting new game...');
-                        this.lives=0;
-                    }
-                    this.reset();
-            }
-        }
     }
 
     /**
@@ -159,7 +151,7 @@ class Player{
 * Player.handleInput() method. 
 */ 
 (function initializeGame(){
-    for (var i = 0; i < totalEnemies; i++) {
+    for (let i = 0; i < totalEnemies; i++) {
         allEnemies.push(new Enemy());
     }
     player = new Player();
