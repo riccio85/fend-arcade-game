@@ -5,7 +5,7 @@ Clone the project from this repository and open index.html in your browser or cl
 
 ## How to play
 ### Player Change
-You can change the player by selecting one on the avatar images list at the begining of the game.
+You can change the player by selecting one of the avatar images listed at the beginning of the game.
 
 ### Start playing
 Click the start button to start the game. 
